@@ -1,4 +1,7 @@
 #include <iostream>
+#include <stdlib.h>
+#include <iomanip>
+#include <unistd.h>
 #include <ctime>
 using namespace std;
 //creating an Alarm class 
@@ -55,17 +58,29 @@ Alarm::Alarm(int hour, int min, int wday){
     wd = wday;
 }
 
+//current function not incrementing time (is it because time is fixed at what time the program starts?)
 bool timeCheck(int hour, int min){
-    int curHour, curMin;
-    
-    do
-    {
-        /* code */
-    } while (/* condition */);
-       
+    bool check = false;
+    time_t t = time(0);
+    tm* now = localtime(&t);
+    int curHour = (now->tm_hour);
+    int curMin = (now->tm_min);
+    cout << "Current time is " << curHour << ":" << curMin << endl;
+    while ((hour != curHour) || (min != curMin)){
+        cout << "Current time is " << curHour << ":" << curMin << endl;
+        sleep (60);
+        cout << (now->tm_hour) << ":" << (now->tm_min) << endl;
+    }
+
+    return check = true;   
 }
 
 int main (){
-    Alarm wakeUp(7, 30, 1);
+    int hour = 0;
+    int min = 57;
+    Alarm wakeUp(hour, min, 1);
     wakeUp.print();
+    bool check = timeCheck(hour, min);
+    cout << check << endl;
+    return 0;
 }
