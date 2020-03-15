@@ -5,17 +5,25 @@
 #include <ctime>
 using namespace std;
 //creating an Alarm class 
+
+struct alarmTime{
+    int wday;
+    int hour;
+    int min;
+    int sec;
+};
+
 class Alarm {
     //Models the time (and repetition) of the alarm
-    int m, h, wd;
+    public: 
+
     string day;
 
-    public:
-    Alarm (int min, int hour, int wday);
+    Alarm (alarmTime ringTime);
 
-    void print(){
-        dayEval(wd);
-        cout << day << " " << h << ":" << m << endl;
+    void print(){ //error in this function because ringTime undeclared
+        dayEval(ringTime.wday);
+        cout << day << " " << ringTime.hour << ":" << ringTime.min << ":" << ringTime.sec << endl;
     }
 
     void dayEval(int wday){
@@ -50,37 +58,56 @@ class Alarm {
             break;
         }
     }
-};
 
-Alarm::Alarm(int hour, int min, int wday){
-    m = min;
-    h = hour;
-    wd = wday;
-}
-
-//current function not incrementing time (is it because time is fixed at what time the program starts?)
-bool timeCheck(int hour, int min){
-    bool check = false;
-    time_t t = time(0);
-    tm* now = localtime(&t);
-    int curHour = (now->tm_hour);
-    int curMin = (now->tm_min);
-    cout << "Current time is " << curHour << ":" << curMin << endl;
-    while ((hour != curHour) || (min != curMin)){
-        cout << "Current time is " << curHour << ":" << curMin << endl;
-        sleep (60);
-        cout << (now->tm_hour) << ":" << (now->tm_min) << endl;
+    alarmTime curTime(){
+        time_t t = time(0);
+        tm* now = localtime(&t);
+        alarmTime current;
+        current.hour = (now->tm_hour);
+        current.min = (now->tm_min);
+        current.wday = (now->tm_wday);
+        current.sec = (now->tm_sec);
+        return current;
     }
 
-    return check = true;   
-}
+    bool timeCheck(alarmTime ringTime){
+        bool check = false;
+        alarmTime  currentTime;
+        currentTime = curTime();
+
+        while ((currentTime.hour != ringTime.hour) || (currentTime.min != ringTime.min) || currentTime.sec != ringTime.sec){
+            sleep(60);
+            currentTime = curTime();
+        }
+
+        return check = true;   
+    }
+};
+
+/*Alarm::Alarm(alarmTime ringTime, int wday){
+    wd = wday;
+}*/
 
 int main (){
-    int hour = 0;
-    int min = 57;
-    Alarm wakeUp(hour, min, 1);
+    alarmTime wakeTime;
+    int min, hour, wday, sec;
+    cin >> wday;
+    cin >> hour;
+    cin >> min;
+    cin >> sec;
+
+    wakeTime.wday = wday;
+    wakeTime.hour = hour;
+    wakeTime.min = min;
+    wakeTime.sec = sec;
+
+    Alarm wakeUp(wakeTime);
+
     wakeUp.print();
-    bool check = timeCheck(hour, min);
-    cout << check << endl;
+
+    if (wakeUp.timeCheck(wakeTime)){
+        cout << "AHHHH" << endl;
+    }
+
     return 0;
 }
