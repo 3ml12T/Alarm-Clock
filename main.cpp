@@ -15,11 +15,12 @@ struct alarmTime{
 
 class Alarm {
     //Models the time (and repetition) of the alarm
-    public: 
-
+    
     string day;
-
-    Alarm (alarmTime ringTime);
+    alarmTime ringTime;
+    
+    public: 
+    Alarm (alarmTime inputTime);
 
     void print(){ //error in this function because ringTime undeclared
         dayEval(ringTime.wday);
@@ -84,9 +85,9 @@ class Alarm {
     }
 };
 
-/*Alarm::Alarm(alarmTime ringTime, int wday){
-    wd = wday;
-}*/
+Alarm::Alarm(alarmTime inputTime){
+    ringTime = inputTime;
+}
 
 int main (){
     alarmTime wakeTime;
